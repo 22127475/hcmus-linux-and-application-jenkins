@@ -1,0 +1,83 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+}
+
+#game-container {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2rem 3rem;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transition: all 0.3s ease;
+}
+
+h1 {
+    font-weight: 700;
+    font-size: 2.5rem;
+}
+
+.instructions {
+    font-weight: 400;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+#current-number {
+    font-size: 6rem;
+    margin: 1.5rem 0;
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+#player-controls button, #restart-button {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    padding: 0.8rem 1.5rem;
+    margin: 0 0.5rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.25);
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+#player-controls button:hover, #restart-button:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+#player-controls button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+#game-status {
+    margin-top: 1.5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    min-height: 1.8rem;
+    color: #ffdd57;
+}
+
+#restart-button {
+    margin-top: 1.5rem;
+    background: #ff3860;
+}
+
+#restart-button:hover {
+    background: #ff2654;
+}

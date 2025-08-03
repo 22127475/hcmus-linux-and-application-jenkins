@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Race</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <h1>Count Race</h1>
+        <p id="rule-losing" class="instructions">Luật chơi: Cộng dồn số lượt đi. Ai đạt đến 20 trước sẽ thua!</p>
+        <div id="current-number">0</div>
+        <div id="player-controls">
+            <button onclick="playerMove(1)">+1</button>
+            <button onclick="playerMove(2)">+2</button>
+            <button onclick="playerMove(3)">+3</button>
+        </div>
+        <div id="game-status"></div>
+        <button id="restart-button" onclick="restartGame()" style="display:none;">Chơi lại</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
