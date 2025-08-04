@@ -1,0 +1,62 @@
+pipeline {
+  agent any
+
+  environment {
+    
+  }
+
+  stages {
+    stage('Install dependencies') {
+      steps {
+        sh '''
+          npm install
+        '''
+      }
+    }
+
+    stage('Lint code') {
+      steps {
+        sh '''
+          echo "Linting JavaScript..."
+          npx eslint ../../src_web/**/*.js || true
+
+          echo "Linting CSS..."
+          npx stylelint "../../src_web/**/*.css" || true
+
+          echo "Linting HTML..."
+          npx htmlhint ../../src_web/**/*.html || true
+
+          echo "✅ Lint all html, css, js in src_web/"
+        '''
+      }
+    }
+
+    stage('Minify + Obfuscate') {
+      steps {
+        sh '''
+          mkdir -p dist
+
+          # Minify HTML
+          npx html-minifier-terser --collapse-whitespace --remove-comments --minify-css true --minify-js true -o dist/index.html ../../src_web/index.html
+
+          # Minify CSS
+          npx clean-css-cli -o dist/style.css ../../src_web/style.css
+
+          # Obfuscate JS
+          npx javascript-obfuscator ../../src_web/script.js --output dist/script.js
+        '''
+      }
+    }
+
+    
+  }
+
+  post {
+    success {
+      echo '✅ Build success'
+    }
+    failure {
+      echo '❌ Build failed'
+    }
+  }
+}
