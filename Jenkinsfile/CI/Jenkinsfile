@@ -75,6 +75,7 @@ pipeline {
               def imageName = "${env.DOCKER_REGISTRY}/jenkinsapp:${commitID}"
 
               sh """
+                ls
                 docker build -t ${imageName} temp/
                 docker push ${imageName}
               """
@@ -101,6 +102,7 @@ pipeline {
     }
   }
 }
+
 
 
 
