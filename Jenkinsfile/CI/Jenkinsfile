@@ -22,19 +22,19 @@ pipeline {
       }
     }
 
-    stage('Lint code') {
-      steps {
-        dir("${env.WORKSPACE}") {
-          echo "Linting code..."
-          sh '''
-            npx eslint ./src_web/**/*.js || true
-            npx stylelint "./src_web/**/*.css" || true
-            npx htmlhint "./src_web/**/*.html" || true
-          '''
-        }
+    // stage('Lint code') {
+    //   steps {
+    //     dir("${env.WORKSPACE}") {
+    //       echo "Linting code..."
+    //       sh '''
+    //         npx eslint ./src_web/**/*.js || true
+    //         npx stylelint "./src_web/**/*.css" || true
+    //         npx htmlhint "./src_web/**/*.html" || true
+    //       '''
+    //     }
         
-      }
-    }
+    //   }
+    // }
 
     stage('Minify + Obfuscate') {
       steps {
@@ -101,6 +101,7 @@ pipeline {
     }
   }
 }
+
 
 
 
