@@ -5,7 +5,7 @@ pipeline {
     DOCKERHUB_CREDENTIALS_ID = 'Docker_Jenkins_CD'
     DOCKER_REGISTRY        = '22127475'
   }
-
+  
   stages {
     stage('Install dependencies') {
       steps {        
@@ -103,6 +103,7 @@ pipeline {
     }
   }
 }
+
 
 
 
