@@ -11,6 +11,7 @@ pipeline {
       steps {        
         dir("${env.WORKSPACE}") {
           echo "Installing Node.js dependencies..."
+          echo "workspace: ${env.WORKSPACE}"
           sh '''
             npm install
           '''
@@ -98,4 +99,5 @@ pipeline {
     }
   }
 }
+
 
