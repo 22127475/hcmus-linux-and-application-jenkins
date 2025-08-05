@@ -10,12 +10,11 @@ pipeline {
     stage('Install dependencies') {
       steps {        
         dir("${env.WORKSPACE}") {
-          sh '''
-          whoami
-          '''
+          
           echo "Installing Node.js dependencies..."
           
           sh '''
+            whoami
             npm install
           '''
         }
@@ -102,6 +101,7 @@ pipeline {
     }
   }
 }
+
 
 
 
