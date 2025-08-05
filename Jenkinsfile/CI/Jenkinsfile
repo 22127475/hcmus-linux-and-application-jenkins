@@ -14,7 +14,7 @@ pipeline {
           echo "Installing Node.js dependencies..."
           
           sh '''
-            ls
+            
             npm install
           '''
         }
@@ -75,8 +75,8 @@ pipeline {
               def imageName = "${env.DOCKER_REGISTRY}/jenkinsapp:${commitID}"
 
               sh """
-                ls
-                docker build -t ${imageName} temp/
+                
+                docker build -f Dockerfile -t ${imageName} temp/
                 docker push ${imageName}
               """
             }
@@ -102,6 +102,7 @@ pipeline {
     }
   }
 }
+
 
 
 
