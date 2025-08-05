@@ -12,7 +12,6 @@ pipeline {
         dir("${env.WORKSPACE}") {
           sh '''
           whoami
-          pwd
           '''
           echo "Installing Node.js dependencies..."
           
@@ -103,6 +102,7 @@ pipeline {
     }
   }
 }
+
 
 
 
