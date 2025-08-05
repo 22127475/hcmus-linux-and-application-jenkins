@@ -14,7 +14,7 @@ pipeline {
           echo "Installing Node.js dependencies..."
           
           sh '''
-            whoami
+            ls
             npm install
           '''
         }
@@ -101,6 +101,7 @@ pipeline {
     }
   }
 }
+
 
 
 
