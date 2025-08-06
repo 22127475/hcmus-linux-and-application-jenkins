@@ -81,7 +81,7 @@ pipeline {
 
               sh """
                 
-                docker build -f Dockerfile -t ${imageName} temp/
+                docker build -f Dockerfile -t ${imageName} $tempFolderName/
                 docker push ${imageName}
               """
             }
@@ -107,6 +107,7 @@ pipeline {
     }
   }
 }
+
 
 
 
