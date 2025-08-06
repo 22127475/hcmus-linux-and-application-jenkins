@@ -40,18 +40,19 @@ pipeline {
       steps {
         dir("${env.WORKSPACE}") {
           echo "Minifying and obfuscating code..."
-          sh '''
-            mkdir -p temp
+          def tempFolderName = "temp_${env.BUILD_ID}"
+          sh """
+            mkdir -p $tempFolderName
 
             # Minify HTML
-            npx html-minifier-terser --collapse-whitespace --remove-comments --minify-css true --minify-js true -o temp/index.html src_web/index.html
+            npx html-minifier-terser --collapse-whitespace --remove-comments --minify-css true --minify-js true -o $tempFolderName/index.html src_web/index.html
 
             # Minify CSS
-            npx clean-css-cli -o temp/style.css src_web/style.css
+            npx clean-css-cli -o $tempFolderName/style.css src_web/style.css
 
             # Obfuscate JS
-            npx javascript-obfuscator src_web/script.js --output temp/script.js
-          '''
+            npx javascript-obfuscator src_web/script.js --output $tempFolderName/script.js
+          """
         }
         
       }
@@ -103,6 +104,7 @@ pipeline {
     }
   }
 }
+
 
 
 
