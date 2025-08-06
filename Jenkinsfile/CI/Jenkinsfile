@@ -4,6 +4,7 @@ pipeline {
   environment {
     DOCKERHUB_CREDENTIALS_ID = 'Docker_Jenkins_CD'
     DOCKER_REGISTRY        = '22127475'
+    
   }
   
   stages {
@@ -41,7 +42,8 @@ pipeline {
         dir("${env.WORKSPACE}") {
           echo "Minifying and obfuscating code..."
           script {
-            def tempFolderName = "temp_${env.BUILD_ID}"
+            tempFolderName = "temp_${env.BUILD_ID}"
+            
             sh """
               mkdir -p $tempFolderName
   
@@ -108,6 +110,7 @@ pipeline {
     }
   }
 }
+
 
 
 
