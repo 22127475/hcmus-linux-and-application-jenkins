@@ -81,7 +81,8 @@ pipeline {
 
               sh """
                 
-                docker build -f Dockerfile -t ${imageName} $tempFolderName/
+                docker build -f Dockerfile -t ${imageName} ${tempFolderName}
+                
                 docker push ${imageName}
               """
             }
@@ -103,10 +104,11 @@ pipeline {
     }
     always {
       echo '🔄 Cleaning up temporary files...'
-      sh 'rm -rf temp'
+      sh "rm -rf ${tempFolderName}"
     }
   }
 }
+
 
 
 
