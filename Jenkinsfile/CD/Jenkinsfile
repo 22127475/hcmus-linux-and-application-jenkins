@@ -15,20 +15,26 @@ pipeline {
 
     stages {
         stage('create task for ecs') {
-            if (params.COMMIT_ID == 'latest') {
-                steps {
-                    script {
-                        params.COMMIT_ID = sh(script: "git ls-remote origin ref/heads/${params.BRANCH_NAME} | awk '{print \$1}'", returnStdout: true).trim()
+            step() {
+                script() {
+                    if (params.COMMIT_ID == 'latest') {
+                        script {
+                            params.COMMIT_ID = sh(script: "git ls-remote origin ref/heads/${params.BRANCH_NAME} | awk '{print \$1}'", returnStdout: true).trim()
+                        }
                     }
+                    def IMAGE_NAME = "${env.DOCKER_REGISTRY_NAME}:${params.BRANCH_NAME}-${params.COMMIT_ID}"
+                    dir("${env.WORKSPACE}") {
+                        sh """
+                            ./script/create_ecs_task.sh ${IMAGE_NAME}
+                        """
+                    }
+                    
                 }
             }
-            def IMAGE_NAME = "${env.DOCKER_REGISTRY_NAME}:${params.BRANCH_NAME}-${params.COMMIT_ID}"
-            dir("${env.WORKSPACE}") {
-                sh """
-                    ./script/create_ecs_task.sh ${IMAGE_NAME}
-                """
-            }
+            
+            
         }
         
     }
 }
+
