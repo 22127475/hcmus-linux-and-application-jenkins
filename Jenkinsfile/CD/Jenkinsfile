@@ -15,7 +15,7 @@ pipeline {
 
     stages {
         stage('create task for ecs') {
-            step() {
+            steps() {
                 script() {
                     if (params.COMMIT_ID == 'latest') {
                         script {
@@ -37,4 +37,5 @@ pipeline {
         
     }
 }
+
 
