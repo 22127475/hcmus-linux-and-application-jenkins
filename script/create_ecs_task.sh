@@ -24,7 +24,18 @@ aws ecs run-task \
   --launch-type FARGATE \
   --network-configuration "awsvpcConfiguration={subnets=[$SUBNET_1,$SUBNET_2],securityGroups=[$SECURITY_GROUP],assignPublicIp=ENABLED}" \
   --task-definition "$TASK_DEF_NAME" \
-  --region "$REGION"
+  --region "$REGION" \
+  --task-definition my-task-def:1 \
+  --overrides '{
+      "containerOverrides": [{
+        "name": "app",
+        "environment": [
+          {"name": "ENV", "value": "dev"},
+          {"name": "IMAGE_TAG", "value": "${DOCKER_IMAGE}"}
+        ]
+      }]
+    }'
+
 
 
 
