@@ -1,0 +1,34 @@
+pipeline {
+    agent any
+    
+    parameters {
+        
+        string(name: 'BRANCH_NAME',description: "branch name for deploy", defaultValue: 'main')
+        string(name: 'COMMIT_ID', description: "commit id for deploy", defaultValue: 'latest')
+
+    }
+
+    environment {
+        DOCKER_REGISTRY_NAME = '22127475/jenkinsapp'
+        
+    }
+
+    stages {
+        stage('create task for ecs') {
+            if (params.COMMIT_ID == 'latest') {
+                steps {
+                    script {
+                        params.COMMIT_ID = sh(script: "git ls-remote origin ref/heads/${params.BRANCH_NAME} | awk '{print \$1}'", returnStdout: true).trim()
+                    }
+                }
+            }
+            def IMAGE_NAME = "${env.DOCKER_REGISTRY_NAME}:${params.BRANCH_NAME}-${params.COMMIT_ID}"
+            dir("${env.WORKSPACE}") {
+                sh """
+                    ./script/create_ecs_task.sh ${IMAGE_NAME}
+                """
+            }
+        }
+        
+    }
+}
