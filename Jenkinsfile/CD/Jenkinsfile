@@ -28,6 +28,7 @@ pipeline {
                         
                             sh """
                                 ls -la ./script
+                                dos2unix ./script/create_ecs_task.sh
                                 chmod +x ./script/create_ecs_task.sh
                                 ls -la ./script
                                 bash ./script/create_ecs_task.sh ${IMAGE_NAME}
@@ -42,6 +43,7 @@ pipeline {
         
     }
 }
+
 
 
 
