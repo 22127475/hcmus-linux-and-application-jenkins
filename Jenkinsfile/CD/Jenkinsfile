@@ -21,13 +21,13 @@ pipeline {
                         ENV_COMMIT_ID = "${params.COMMIT_ID}"
                         if (ENV_COMMIT_ID == 'latest') {
                             script {
-                                ENV_COMMIT_ID = sh(script: "git ls-remote origin ref/heads/${params.BRANCH_NAME} | awk '{print \$1}'", returnStdout: true).trim()
+                                ENV_COMMIT_ID = sh(script: "git ls-remote origin refs/heads/${params.BRANCH_NAME} | awk '{print \$1}'", returnStdout: true).trim()
                             }
                         }
                         def IMAGE_NAME = "${env.DOCKER_REGISTRY_NAME}:${params.BRANCH_NAME}-${ENV_COMMIT_ID}"
                         
                             sh """
-                                ls -laR
+                                ls -la ./script
                                 chmod +x ./script/create_ecs_task.sh
                                 ./script/create_ecs_task.sh ${IMAGE_NAME}
                             """
@@ -41,6 +41,7 @@ pipeline {
         
     }
 }
+
 
 
 
