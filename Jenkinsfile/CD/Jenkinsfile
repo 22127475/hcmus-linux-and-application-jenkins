@@ -10,19 +10,19 @@ pipeline {
 
     environment {
         DOCKER_REGISTRY_NAME = '22127475/jenkinsapp'
-        
+        ENV_COMMIT_ID = params.COMMIT_ID
     }
 
     stages {
         stage('create task for ecs') {
             steps() {
                 script() {
-                    if (params.COMMIT_ID == 'latest') {
+                    if (ENV_COMMIT_ID == 'latest') {
                         script {
-                            params.COMMIT_ID = sh(script: "git ls-remote origin ref/heads/${params.BRANCH_NAME} | awk '{print \$1}'", returnStdout: true).trim()
+                            ENV_COMMIT_ID = sh(script: "git ls-remote origin ref/heads/${params.BRANCH_NAME} | awk '{print \$1}'", returnStdout: true).trim()
                         }
                     }
-                    def IMAGE_NAME = "${env.DOCKER_REGISTRY_NAME}:${params.BRANCH_NAME}-${params.COMMIT_ID}"
+                    def IMAGE_NAME = "${env.DOCKER_REGISTRY_NAME}:${params.BRANCH_NAME}-${ENV_COMMIT_ID}"
                     dir("${env.WORKSPACE}") {
                         sh """
                             ./script/create_ecs_task.sh ${IMAGE_NAME}
@@ -37,5 +37,6 @@ pipeline {
         
     }
 }
+
 
 
