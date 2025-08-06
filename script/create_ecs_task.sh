@@ -4,7 +4,7 @@
 CLUSTER_NAME="linux-and-application"
 SUBNET_1=$(aws cloudformation list-exports --query "Exports[?Name=='Project01-Public-Subnet-1a'].Value" --output text)
 SUBNET_2=$(aws cloudformation list-exports --query "Exports[?Name=='Project01-Public-Subnet-1b'].Value" --output text)
-SECURITY_GROUP=$(aws cloudformation list-exports --query "Exports[?Name==Project01-App-Tier-SG-ID''].Value" --output text)
+SECURITY_GROUP=$(aws cloudformation list-exports --query "Exports[?Name=='Project01-App-Tier-SG-ID'].Value" --output text)
 
 # 🟡 Các biến còn lại
 REGION="us-east-1"
@@ -26,4 +26,5 @@ aws ecs run-task \
   --task-definition "$TASK_DEF_NAME" \
   --region "$REGION"
 i
+
 
