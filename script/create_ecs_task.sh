@@ -10,7 +10,7 @@ SECURITY_GROUP=$(aws cloudformation list-exports --query "Exports[?Name=='Projec
 REGION="us-east-1"
 IMAGE_TAG="$1"
 DOCKER_IMAGE="22127475/jenkinsapp:${IMAGE_TAG}"
-TASK_DEF_NAME="jenkins-app-${IMAGE_TAG}"
+TASK_DEF_NAME="jenkins-app"
 
 if [ -z "$IMAGE_TAG" ]; then
   echo "❌ Thiếu IMAGE_TAG. "
@@ -25,6 +25,7 @@ aws ecs run-task \
   --network-configuration "awsvpcConfiguration={subnets=[$SUBNET_1,$SUBNET_2],securityGroups=[$SECURITY_GROUP],assignPublicIp=ENABLED}" \
   --task-definition "$TASK_DEF_NAME" \
   --region "$REGION"
-i
+
+
 
 
