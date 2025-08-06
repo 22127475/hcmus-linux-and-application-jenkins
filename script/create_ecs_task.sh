@@ -26,3 +26,4 @@ aws ecs run-task \
   --task-definition "$TASK_DEF_NAME" \
   --region "$REGION"
 i
+
