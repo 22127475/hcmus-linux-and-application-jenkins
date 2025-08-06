@@ -26,6 +26,7 @@ pipeline {
                     def IMAGE_NAME = "${env.DOCKER_REGISTRY_NAME}:${params.BRANCH_NAME}-${ENV_COMMIT_ID}"
                     dir("${env.WORKSPACE}") {
                         sh """
+                            chmod +x ./script/create_ecs_task.sh
                             ./script/create_ecs_task.sh ${IMAGE_NAME}
                         """
                     }
@@ -38,6 +39,7 @@ pipeline {
         
     }
 }
+
 
 
 
