@@ -4,16 +4,18 @@ pipeline {
     stages {
         stage('Deploy to ECS') {
             steps {
-                script {
-                    sh """
-                        dos2unix ./script/delete_eccs_task.sh
-                        chmod +x ./script/delete_eccs_task.sh 
-                    """
-                    
-                    echo "🚀 Executing deployment script..."
-                    sh """
-                        bash ./script/delete_eccs_task.sh "${params.task_id}"
-                    """
+                dir(env.WORKSPACE) {
+                    script {
+                        sh """
+                            dos2unix ./script/delete_eccs_task.sh
+                            chmod +x ./script/delete_eccs_task.sh 
+                        """
+                        
+                        echo "🚀 Executing deployment script..."
+                        sh """
+                            bash ./script/delete_eccs_task.sh "${params.task_id}"
+                        """
+                    }
                 }
             }
         }
