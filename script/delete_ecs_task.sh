@@ -8,7 +8,6 @@ set -e
 # Tên file delete_ecs_task.sh có thể gây nhầm lẫn, bạn có thể đổi thành destroy_preview_env.sh
 if [ "$#" -ne 1 ]; then
     echo "Sử dụng: $0 <unique-identifier>"
-    echo "Ví dụ: bash ./script/delete_ecs_task.sh main-a1b2c3d"
     exit 1
 fi
 
