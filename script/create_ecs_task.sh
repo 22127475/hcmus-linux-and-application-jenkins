@@ -25,7 +25,6 @@ aws ecs register-task-definition \
   --network-mode awsvpc \
   --cpu "256" \
   --memory "512" \
-  --execution-role-arn "arn:aws:iam::567434908516:role/LabRole" \
   --container-definitions "[
     {
       \"name\": \"$CONTAINER_NAME\",
@@ -77,6 +76,7 @@ aws elbv2 register-targets \
 
 echo "✅ ECS Task registered to ALB successfully."
 echo "🔗 Access URL: http://$ALB_DNS"
+
 
 
 
