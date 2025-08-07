@@ -1,96 +1,57 @@
-# #!/bin/bash
-
-# # 🟡 Lấy giá trị từ CloudFormation exports
-# CLUSTER_NAME="linux-and-application"
-# SUBNET_1=$(aws cloudformation list-exports --query "Exports[?Name=='Project01-Public-Subnet-1a'].Value" --output text)
-# SUBNET_2=$(aws cloudformation list-exports --query "Exports[?Name=='Project01-Public-Subnet-1b'].Value" --output text)
-# SECURITY_GROUP=$(aws cloudformation list-exports --query "Exports[?Name=='Project01-App-Tier-SG-ID'].Value" --output text)
-
-# # 🟡 Các biến còn lại
-# REGION="us-east-1"
-
-# DOCKER_IMAGE="$1"
-# TASK_DEF_NAME="jenkins-app"
-
-# if [ -z "$IMAGE_TAG" ]; then
-#   echo "❌ Thiếu IMAGE_TAG. "
-#   exit 1
-# fi
-
-# echo "🚀 Chạy ECS task với Docker image: $DOCKER_IMAGE"
-
-# aws ecs run-task \
-#   --cluster "$CLUSTER_NAME" \
-#   --task-definition "$TASK_DEF_NAME" \
-#   --network-configuration "awsvpcConfiguration={subnets=[$SUBNET_1,$SUBNET_2],securityGroups=[$SECURITY_GROUP],assignPublicIp=ENABLED}" \
-#   --overrides '{
-#       "containerOverrides": [{
-#         "name": "jenkins-app",
-#         "image": "22127475/jenkinsapp:main-abc123"
-#       }]
-#     }'
-
-
-
-
-
-
-
-
-
 #!/bin/bash
 
 set -e
 
-# 🟡 Lấy giá trị từ CloudFormation exports
+# 🟡 Các biến cần thiết
 CLUSTER_NAME="linux-and-application"
+REGION="us-east-1"
+TASK_DEF_NAME="jenkins-app"
+DOCKER_IMAGE="$1"  # ví dụ: 22127475/jenkinsapp:main-abc123
+TG_ARN=$(aws cloudformation list-exports --query "Exports[?Name=='JenkinsApp-TG-ARN'].Value" --output text)
+
+# Lấy từ CloudFormation
 SUBNET_1=$(aws cloudformation list-exports --query "Exports[?Name=='Project01-Public-Subnet-1a'].Value" --output text)
 SUBNET_2=$(aws cloudformation list-exports --query "Exports[?Name=='Project01-Public-Subnet-1b'].Value" --output text)
 SECURITY_GROUP=$(aws cloudformation list-exports --query "Exports[?Name=='Project01-App-Tier-SG-ID'].Value" --output text)
 
-# 🟡 Các biến còn lại
-REGION="us-east-1"
-DOCKER_IMAGE="$1"
+echo "🚀 Running ECS task with image: $DOCKER_IMAGE"
 
-if [ -z "$DOCKER_IMAGE" ]; then
-  echo "❌ Thiếu Docker image tag (VD: 22127475/jenkinsapp:main-abc123)"
-  exit 1
-fi
-
-# 🟡 Tạo một task definition mới
-TASK_DEF_NAME="jenkins-app"
-CONTAINER_NAME="jenkins-app"
-TASK_DEF_FAMILY="${TASK_DEF_NAME}-$(echo "$DOCKER_IMAGE" | tr ':/' '--')"
-
-echo "🛠️  Đăng ký task definition mới với image: $DOCKER_IMAGE"
-
-aws ecs register-task-definition \
-  --family "$TASK_DEF_FAMILY" \
-  --requires-compatibilities FARGATE \
-  --network-mode awsvpc \
-  --cpu "256" \
-  --memory "512" \
-  --container-definitions "[
-    {
-      \"name\": \"$CONTAINER_NAME\",
-      \"image\": \"$DOCKER_IMAGE\",
-      \"essential\": true,
-      \"portMappings\": [
-        {
-          \"containerPort\": 80,
-          \"hostPort\": 80,
-          \"protocol\": \"tcp\"
-        }
-      ]
-    }
-  ]" \
-  --region "$REGION"
-
-echo "🚀 Chạy ECS task từ task definition mới..."
-
-aws ecs run-task \
+# 🟠 Run ECS Task
+TASK_ARN=$(aws ecs run-task \
   --cluster "$CLUSTER_NAME" \
   --launch-type FARGATE \
   --network-configuration "awsvpcConfiguration={subnets=[$SUBNET_1,$SUBNET_2],securityGroups=[$SECURITY_GROUP],assignPublicIp=ENABLED}" \
-  --task-definition "$TASK_DEF_FAMILY" \
-  --region "$REGION"
+  --overrides "{
+    \"containerOverrides\": [{
+      \"name\": \"jenkins-app\"
+    }]
+  }" \
+  --task-definition "$TASK_DEF_NAME" \
+  --region "$REGION" \
+  --query "tasks[0].taskArn" --output text)
+
+echo "🔄 Waiting for task to run..."
+aws ecs wait tasks-running --cluster "$CLUSTER_NAME" --tasks "$TASK_ARN"
+
+# 🟢 Get ENI (network interface)
+ENI_ID=$(aws ecs describe-tasks \
+  --cluster "$CLUSTER_NAME" \
+  --tasks "$TASK_ARN" \
+  --query "tasks[0].attachments[0].details[?name=='networkInterfaceId'].value" \
+  --output text)
+
+# 🟢 Get Public IP
+PUBLIC_IP=$(aws ec2 describe-network-interfaces \
+  --network-interface-ids "$ENI_ID" \
+  --query "NetworkInterfaces[0].Association.PublicIp" \
+  --output text)
+
+echo "🌐 Public IP: $PUBLIC_IP"
+
+# 🟢 Register to Target Group
+aws elbv2 register-targets \
+  --target-group-arn "$TG_ARN" \
+  --targets "Id=$PUBLIC_IP,Port=80"
+
+echo "✅ ECS Task registered to ALB successfully."
+echo "🔗 Access URL: http://$(aws cloudformation list-exports --query \"Exports[?Name=='JenkinsApp-ALB-DNSName'].Value\" --output text)"
