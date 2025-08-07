@@ -22,13 +22,14 @@ echo "🚀 Chạy ECS task với Docker image: $DOCKER_IMAGE"
 aws ecs run-task \
   --cluster "$CLUSTER_NAME" \
   --task-definition "$TASK_DEF_NAME" \
-  --task-definition my-task-def:1 \
+  --network-configuration "awsvpcConfiguration={subnets=[$SUBNET_1,$SUBNET_2],securityGroups=[$SECURITY_GROUP],assignPublicIp=ENABLED}" \
   --overrides '{
       "containerOverrides": [{
         "name": "jenkins-app",
         "image": "22127475/jenkinsapp:main-abc123"
       }]
     }'
+
 
 
 
