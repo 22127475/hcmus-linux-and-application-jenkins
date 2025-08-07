@@ -45,4 +45,6 @@ FINAL_URL="http://${ALB_DNS_NAME}/${UNIQUE_IDENTIFIER}/"
 echo -e "\n=================================================================="
 echo "✅ TRIỂN KHAI THÀNH CÔNG!"
 echo "🔗 URL để test: $FINAL_URL"
+echo "Unique indentifier: ${UNIQUE_IDENTIFIER}"
 echo "=================================================================="
+
