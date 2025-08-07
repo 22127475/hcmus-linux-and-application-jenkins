@@ -1,4 +1,3 @@
-// Jenkinsfile-deploy (Sử dụng Path-based routing)
 pipeline {
     agent any
 
@@ -43,3 +42,4 @@ pipeline {
         }
     }
 }
+
