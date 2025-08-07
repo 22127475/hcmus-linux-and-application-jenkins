@@ -46,5 +46,7 @@ echo -e "\n=================================================================="
 echo "✅ TRIỂN KHAI THÀNH CÔNG!"
 echo "🔗 URL để test: $FINAL_URL"
 echo "Unique indentifier: ${UNIQUE_IDENTIFIER}"
+echo "Terminate URL: http://jenkins.diephuy.id.vn:8080/job/terminate_task/buildWithParameters?token=22127@HCMUS&PARAMETER=${UNIQUE_IDENTIFIER}"
 echo "=================================================================="
+
 
