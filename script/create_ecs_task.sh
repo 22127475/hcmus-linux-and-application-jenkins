@@ -13,8 +13,6 @@ CONTAINER_NAME="jenkins-app"
 SUBNET_1=$(aws cloudformation list-exports --query "Exports[?Name=='Project01-Public-Subnet-1a'].Value" --output text)
 SUBNET_2=$(aws cloudformation list-exports --query "Exports[?Name=='Project01-Public-Subnet-1b'].Value" --output text)
 SECURITY_GROUP=$(aws cloudformation list-exports --query "Exports[?Name=='Project01-App-Tier-SG-ID'].Value" --output text)
-TG_ARN=$(aws cloudformation list-exports --query "Exports[?Name=='JenkinsApp-TG-ARN'].Value" --output text)
-ALB_DNS=$(aws cloudformation list-exports --query "Exports[?Name=='JenkinsApp-ALB-DNSName'].Value" --output text)
 
 echo "🚀 Registering task definition with image: $DOCKER_IMAGE"
 
@@ -25,22 +23,37 @@ aws ecs register-task-definition \
   --network-mode awsvpc \
   --cpu "256" \
   --memory "512" \
-  --container-definitions "[
-    {
+  --container-definitions "[{
       \"name\": \"$CONTAINER_NAME\",
       \"image\": \"$DOCKER_IMAGE\",
       \"essential\": true,
-      \"portMappings\": [
-        {
-          \"containerPort\": 80,
-          \"protocol\": \"tcp\"
-        }
-      ]
-    }
-  ]" \
+      \"portMappings\": [{
+        \"containerPort\": 80,
+        \"protocol\": \"tcp\"
+      }]
+  }]" \
   --region "$REGION" > /dev/null
 
 echo "▶️ Task definition [$TASK_DEF_NAME] registered."
+
+# ✅ Đảm bảo Security Group mở cổng 80
+echo "🔒 Checking if SG $SECURITY_GROUP allows TCP:80 from 0.0.0.0/0..."
+HAS_RULE=$(aws ec2 describe-security-groups \
+  --group-ids "$SECURITY_GROUP" \
+  --query "SecurityGroups[0].IpPermissions[?FromPort==\`80\` && IpRanges[?CidrIp=='0.0.0.0/0']]" \
+  --output text)
+
+if [ -z "$HAS_RULE" ]; then
+  echo "🛠️  Adding ingress rule for port 80..."
+  aws ec2 authorize-security-group-ingress \
+    --group-id "$SECURITY_GROUP" \
+    --protocol tcp \
+    --port 80 \
+    --cidr 0.0.0.0/0
+  echo "✅ Port 80 opened to 0.0.0.0/0."
+else
+  echo "✅ Security group already allows port 80 from 0.0.0.0/0."
+fi
 
 # 🟢 Run ECS task
 TASK_ARN=$(aws ecs run-task \
@@ -67,16 +80,9 @@ PUBLIC_IP=$(aws ec2 describe-network-interfaces \
   --query "NetworkInterfaces[0].Association.PublicIp" \
   --output text)
 
-# # 🟢 Register to Target Group
-# aws elbv2 register-targets \
-#   --target-group-arn "$TG_ARN" \
-#   --targets "Id=$PUBLIC_IP,Port=80"
-
-echo "✅ ECS Task registered to ALB successfully."
-
 # ✅ In kết quả đầy đủ
 echo ""
 echo "========================= 🔗 ACCESS LINKS ========================="
 echo "🔗 Public IP (for quick testing):  http://$PUBLIC_IP"
+echo "📦 ECS Task ARN:                   $TASK_ARN"
 echo "=================================================================="
-
