@@ -78,6 +78,8 @@ TASK_ARN=$(aws ecs run-task \
   --query "tasks[0].taskArn" --output text)
 
 echo "⏳ Waiting for task to run..."
+echo "CLUSTER_NAME: $CLUSTER_NAME"
+echo "TASK_ARN: $TASK_ARN"
 aws ecs wait tasks-running --cluster "$CLUSTER_NAME" --tasks "$TASK_ARN"
 
 # ========================== #
@@ -118,3 +120,4 @@ echo "🔗 Direct Public IP:  http://$PUBLIC_IP"
 echo "📦 ECS Task ARN:      $TASK_ARN"
 echo "🧩 ENI ID:            $ENI_ID"
 echo "=================================================================="
+
