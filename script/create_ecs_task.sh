@@ -67,16 +67,15 @@ PUBLIC_IP=$(aws ec2 describe-network-interfaces \
   --query "NetworkInterfaces[0].Association.PublicIp" \
   --output text)
 
-echo "🌐 Public IP: $PUBLIC_IP"
-
 # 🟢 Register to Target Group
 aws elbv2 register-targets \
   --target-group-arn "$TG_ARN" \
   --targets "Id=$PUBLIC_IP,Port=80"
 
 echo "✅ ECS Task registered to ALB successfully."
-echo "🔗 Access URL: http://$ALB_DNS"
 
-
-
-
+# ✅ In kết quả đầy đủ
+echo ""
+echo "========================= 🔗 ACCESS LINKS ========================="
+echo "🔗 Public IP (for quick testing):  http://$PUBLIC_IP"
+echo "=================================================================="
