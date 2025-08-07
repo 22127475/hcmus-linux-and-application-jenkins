@@ -8,8 +8,8 @@ SECURITY_GROUP=$(aws cloudformation list-exports --query "Exports[?Name=='Projec
 
 # 🟡 Các biến còn lại
 REGION="us-east-1"
-IMAGE_TAG="$1"
-DOCKER_IMAGE="22127475/jenkinsapp:${IMAGE_TAG}"
+
+DOCKER_IMAGE="$1"
 TASK_DEF_NAME="jenkins-app"
 
 if [ -z "$IMAGE_TAG" ]; then
@@ -29,6 +29,7 @@ aws ecs run-task \
         "image": "22127475/jenkinsapp:main-abc123"
       }]
     }'
+
 
 
 
