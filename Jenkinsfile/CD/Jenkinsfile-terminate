@@ -7,13 +7,13 @@ pipeline {
                 dir(env.WORKSPACE) {
                     script {
                         sh """
-                            dos2unix ./script/delete_eccs_task.sh
-                            chmod +x ./script/delete_eccs_task.sh 
+                            dos2unix ./script/delete_ecs_task.sh
+                            chmod +x ./script/delete_ecs_task.sh 
                         """
                         
                         echo "🚀 Executing deployment script..."
                         sh """
-                            bash ./script/delete_eccs_task.sh "${params.task_id}"
+                            bash ./script/delete_ecs_task.sh "${params.task_id}"
                         """
                     }
                 }
