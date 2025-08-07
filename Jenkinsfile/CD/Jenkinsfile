@@ -1,56 +1,45 @@
+// Jenkinsfile-deploy (Sử dụng Path-based routing)
 pipeline {
     agent any
-    
-    parameters {
-        
-        string(name: 'BRANCH_NAME',description: "branch name for deploy", defaultValue: 'main')
-        string(name: 'COMMIT_ID', description: "commit id for deploy", defaultValue: 'latest')
 
+    parameters {
+        string(name: 'BRANCH_NAME', defaultValue: 'main')
+        string(name: 'COMMIT_ID', defaultValue: 'latest')
     }
 
     environment {
-        DOCKER_REGISTRY_NAME = '22127475/jenkinsapp'
-        
+        REGISTRY_NAME = '22127475/jenkinsapp'
     }
 
     stages {
-        stage('create task for ecs') {
-            steps() {
-                dir("${env.WORKSPACE}") {
-                    script() {
-                        ENV_COMMIT_ID = "${params.COMMIT_ID}"
-                        if (ENV_COMMIT_ID == 'latest') {
-                            script {
-                                ENV_COMMIT_ID = sh(script: "git ls-remote origin refs/heads/${params.BRANCH_NAME} | awk '{print \$1}'", returnStdout: true).trim()
-                            }
-                        }
-                        def IMAGE_NAME = "${env.DOCKER_REGISTRY_NAME}:${params.BRANCH_NAME}-${ENV_COMMIT_ID}"
-                        
-                            sh """
-                                ls -la ./script
-                                dos2unix ./script/create_ecs_task.sh
-                                chmod +x ./script/create_ecs_task.sh
-                                ls -la ./script
-                                bash ./script/create_ecs_task.sh ${IMAGE_NAME}
-                            """
-                    }    
+        stage('Prepare Deployment Info') {
+            steps {
+                script {
+                    def ENV_COMMIT_ID = params.COMMIT_ID
+                    
+                    if (ENV_COMMIT_ID == 'latest') {
+                        ENV_COMMIT_ID = sh(script: "git ls-remote origin refs/heads/${params.BRANCH_NAME} | awk '{print \$1}'", returnStdout: true).trim()
+                    }
+                    env.IMAGE_NAME = "${env.REGISTRY_NAME}:${params.BRANCH_NAME}-${ENV_COMMIT_ID}"
+                    echo "Preparing to deploy Docker Image: ${env.IMAGE_NAME}"
                 }
-                
             }
-            
-            
         }
-        
+
+        stage('Deploy to ECS') {
+            steps {
+                script {
+                    sh """
+                        dos2unix ./script/create_eccs_task.sh
+                        chmod +x ./script/create_eccs_task.sh
+                    """
+                    
+                    echo "🚀 Executing deployment script..."
+                    sh """
+                        bash ./script/create_eccs_task.sh "${env.IMAGE_NAME}"
+                    """
+                }
+            }
+        }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
