@@ -75,6 +75,18 @@ else
     echo "🟡 Không tìm thấy Target Group."
 fi
 
+# 🔵 [5/5] HỦY ĐĂNG KÝ TASK DEFINITION
+echo "🔵 [5/5] Đang hủy đăng ký các phiên bản Task Definition cho family: task-${UNIQUE_IDENTIFIER}"
+# Lấy danh sách tất cả các ARN của các phiên bản trong family này
+TASK_DEF_ARNS=$(aws ecs list-task-definitions --family-prefix "task-${UNIQUE_IDENTIFIER}" --status ACTIVE --query "taskDefinitionArns" --output json)
+
+# Lặp qua từng ARN và hủy đăng ký nó
+for arn in $(echo "${TASK_DEF_ARNS}" | jq -r '.[]'); do
+    echo "  -> Deregistering $arn"
+    aws ecs deregister-task-definition --task-definition "$arn" > /dev/null
+done
+echo "✅ Các Task Definition liên quan đã được chuyển sang trạng thái INACTIVE."
+
 echo -e "\n=================================================================="
 echo "✅ DỌN DẸP HOÀN TẤT!"
 echo "=================================================================="
