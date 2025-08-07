@@ -29,8 +29,8 @@ pipeline {
             steps {
                 script {
                     sh """
-                        dos2unix ./script/create_eccs_task.sh
-                        chmod +x ./script/create_eccs_task.sh
+                        dos2unix ./script/create_ecs_task.sh
+                        chmod +x ./script/create_ecs_task.sh
                     """
                     
                     echo "🚀 Executing deployment script..."
@@ -42,5 +42,6 @@ pipeline {
         }
     }
 }
+
 
 
