@@ -1,3 +1,4 @@
+
 #!/bin/bash
 
 set -e
@@ -85,4 +86,6 @@ echo ""
 echo "========================= 🔗 ACCESS LINKS ========================="
 echo "🔗 Public IP (for quick testing):  http://$PUBLIC_IP"
 echo "📦 ECS Task ARN:                   $TASK_ARN"
+echo "ENI_ID: $ENI_ID"
 echo "=================================================================="
+
