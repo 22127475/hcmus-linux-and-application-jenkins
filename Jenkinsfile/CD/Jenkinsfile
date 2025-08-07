@@ -35,11 +35,12 @@ pipeline {
                     
                     echo "🚀 Executing deployment script..."
                     sh """
-                        bash ./script/create_eccs_task.sh "${env.IMAGE_NAME}"
+                        bash ./script/create_ecs_task.sh "${env.IMAGE_NAME}"
                     """
                 }
             }
         }
     }
 }
+
 
