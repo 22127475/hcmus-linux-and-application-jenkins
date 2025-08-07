@@ -1,8 +1,11 @@
 pipeline {
     agent any
 
+    parameters {
+        string(name: 'task_id')
+    }
     stages {
-        stage('Deploy to ECS') {
+        stage('Terminate ECS task') {
             steps {
                 dir(env.WORKSPACE) {
                     script {
