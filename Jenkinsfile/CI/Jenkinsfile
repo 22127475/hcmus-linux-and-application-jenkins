@@ -41,17 +41,31 @@ pipeline {
           script {
             tempFolderName = "temp_${env.BUILD_ID}"
             
+            // sh """
+            //   mkdir -p $tempFolderName
+  
+            //   # Minify HTML
+            //   npx html-minifier-terser --collapse-whitespace --remove-comments --minify-css true --minify-js true -o $tempFolderName/index.html src_web/index.html
+  
+            //   # Minify CSS
+            //   npx clean-css-cli -o $tempFolderName/style.css src_web/style.css
+  
+            //   # Obfuscate JS
+            //   npx javascript-obfuscator src_web/script.js --output $tempFolderName/script.js
+
+            //   cp -R ./nginx $tempFolderName/
+            // """  
             sh """
               mkdir -p $tempFolderName
   
               # Minify HTML
-              npx html-minifier-terser --collapse-whitespace --remove-comments --minify-css true --minify-js true -o $tempFolderName/index.html src_web/index.html
+              cp src_web/index.html $tempFolderName/index.html
   
               # Minify CSS
-              npx clean-css-cli -o $tempFolderName/style.css src_web/style.css
-  
+              cp src_web/style.css $tempFolderName/style.css
+
               # Obfuscate JS
-              npx javascript-obfuscator src_web/script.js --output $tempFolderName/script.js
+              cp src_web/script.js $tempFolderName/script.js
 
               cp -R ./nginx $tempFolderName/
             """  
@@ -102,6 +116,7 @@ pipeline {
     }
   }
 }
+
 
 
 
