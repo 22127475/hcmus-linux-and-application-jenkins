@@ -55,6 +55,8 @@ pipeline {
   
               # Obfuscate JS
               npx javascript-obfuscator src_web/script.js --output $tempFolderName/script.js
+
+              cp -R ./nginx $tempFolderName/
             """  
           }
           
@@ -110,6 +112,7 @@ pipeline {
     }
   }
 }
+
 
 
 
