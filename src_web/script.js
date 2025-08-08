@@ -1,4 +1,4 @@
-const MAX_NUMBER = 30;
+const MAX_NUMBER = 20;
 
 let currentNumber = 0;
 const winningNumber = MAX_NUMBER - 1;
