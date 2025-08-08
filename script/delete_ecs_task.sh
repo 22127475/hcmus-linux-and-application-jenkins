@@ -1,24 +1,15 @@
 #!/bin/bash
 
-# Script để dọn dẹp một môi trường test.
-# Đã được sửa lỗi parsing bằng cách sử dụng jq.
+
 set -e
 
-# Script này nhận vào UNIQUE_IDENTIFIER (ví dụ: main-a1b2c3d)
-# Tên file delete_ecs_task.sh có thể gây nhầm lẫn, bạn có thể đổi thành destroy_preview_env.sh
 if [ "$#" -ne 1 ]; then
     echo "Sử dụng: $0 <unique-identifier>"
     exit 1
 fi
 
-# ========================== #
-# 🟡 Biến đầu vào
-# ========================== #
 UNIQUE_IDENTIFIER="$1"
 
-# ========================== #
-# 🟡 Biến cấu hình AWS
-# ========================== #
 REGION="us-east-1"
 SERVICE_NAME="svc-${UNIQUE_IDENTIFIER}"
 TARGET_GROUP_NAME="tg-${UNIQUE_IDENTIFIER:0:28}"
