@@ -67,7 +67,9 @@ pipeline {
               # Obfuscate JS
               cp src_web/script.js $tempFolderName/script.js
 
-              cp -R ./nginx $tempFolderName/
+              cp -r nginx $tempFolderName/nginx
+
+              ls -laR $tempFolderName
             """  
           }
         }
@@ -117,6 +119,7 @@ pipeline {
     }
   }
 }
+
 
 
 
