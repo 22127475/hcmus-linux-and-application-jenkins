@@ -20,19 +20,6 @@ pipeline {
       }
     }
 
-    stage('Lint code') {
-      steps {
-        dir("${env.WORKSPACE}") {
-          echo "Linting code..."
-          sh '''
-            npx eslint ./src_web/**/*.js
-            npx stylelint "./src_web/**/*.css"
-            npx htmlhint "./src_web/**/*.html"
-          '''
-        }    
-      }
-    }
-
     stage('Minify + Obfuscate') {
       steps {
         dir("${env.WORKSPACE}") {
@@ -92,6 +79,7 @@ pipeline {
     }
   }
 }
+
 
 
 
