@@ -25,9 +25,9 @@ pipeline {
         dir("${env.WORKSPACE}") {
           echo "Linting code..."
           sh '''
-            npx eslint ./src_web/**/*.js || true
-            npx stylelint "./src_web/**/*.css" || true
-            npx htmlhint "./src_web/**/*.html" || true
+            npx eslint ./src_web/**/*.js"
+            npx stylelint "./src_web/**/*.css"
+            npx htmlhint "./src_web/**/*.html"
           '''
         }    
       }
@@ -92,6 +92,7 @@ pipeline {
     }
   }
 }
+
 
 
 
