@@ -30,7 +30,7 @@ CLUSTER_NAME=$(aws cloudformation list-exports --query "Exports[?Name=='Project0
 # 🔵 [2/4] XÓA RULE TRÊN ALB
 echo "🔵 [2/4] Đang xóa Rule trên ALB cho đường dẫn ${PATH_PATTERN_TO_FIND}..."
 
-# --- PHẦN SỬA LỖI ---
+
 # Lấy toàn bộ các rule dưới dạng JSON và dùng jq để lọc một cách an toàn
 RULE_ARN=$(aws elbv2 describe-rules --listener-arn "$ALB_LISTENER_ARN" --output json | \
            jq -r --arg pattern "$PATH_PATTERN_TO_FIND" '.Rules[] | select(.Conditions[0].PathPatternConfig.Values[0] == $pattern) | .RuleArn')
@@ -41,7 +41,6 @@ if [ -n "$RULE_ARN" ]; then
 else
     echo "🟡 Không tìm thấy Rule."
 fi
-# --- KẾT THÚC PHẦN SỬA LỖI ---
 
 
 # 🔵 [3/4] XÓA ECS SERVICE
